@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Map with Pathfinding</title>
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 200px;
+            z-index: 100;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSg_Xu0Lt24Y7WyK30OTXtTmb67gbDN-k&libraries=geometry&callback=initMap" async defer></script>
+    <script>
+        let map;
+        let polylines = [];
+        const graph = {};
+        let highlightedPath = null;
+
+        function initMap() {
+            const locations = {
+                "A": { lat: 12.871594404312932, lng: 80.21989142182689},
+                "ST": { lat: 12.871357673608909, lng: 80.22108199297492 },
+                "SP": { lat: 12.871190138568993, lng: 80.22188184840775 },
+                "D": { lat: 12.871053316032322, lng: 80.2228225660964 },
+                "H1": { lat: 12.870838837309105, lng: 80.22400984281501 },
+                "F": { lat: 12.871973773596293, lng: 80.21875837045675 },
+                "LIB": { lat: 12.873586050132726, lng: 80.21927424789436 },
+                "H": { lat: 12.873157096839943, lng: 80.21989254218167 },
+                "B4": { lat: 12.87302027537999, lng: 80.22056014825934 },
+                "B2": { lat: 12.87291673476354, lng: 80.22088636487716 },
+                "ECE": { lat: 12.873563862925572, lng: 80.22069291081634 },
+                "ME": { lat: 12.87372656916937, lng: 80.2200025454158 },
+                "AER": { lat: 12.873867088114379, lng: 80.21929321394971 },
+                "B18": { lat: 12.87500233038697, lng: 80.22168673352012 },
+                "B14": { lat: 12.87435150809023, lng: 80.22153121164418 },
+                "H3": { lat: 12.870531105251846, lng: 80.21964413165101 },
+                "Q": { lat: 12.872282886931236, lng: 80.22142185660726 },
+                "R": { lat: 12.872428006244888, lng: 80.22075875136221 },
+                "CAN": { lat: 12.872568727923362, lng: 80.2201046679572 },
+                "T": { lat: 12.872763221579026, lng: 80.21909212353748 },
+                "U": { lat: 12.872167511430147, lng: 80.22201116424104 },
+                "FG": { lat: 12.873358463671309, lng: 80.22224082279553 },
+                "MEM": { lat: 12.873346800244912, lng: 80.22167366284735 },
+                "B1": { lat: 12.873977259087972, lng: 80.22153908833536 },
+                "RC": { lat: 12.872798747928382, lng: 80.22158055446326 },
+                "B9": {lat:12.873266059089861, lng: 80.21921053958437},
+                "B5": {lat: 12.873063923119268, lng: 80.22032593968933},
+                "H2": {lat: 12.87171207072451, lng: 80.219902150663}
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 16,
+                center: { lat: 12.872, lng: 80.220 },
+                disableDefaultUI: true
+            });
+
+            Object.entries(locations).forEach(([name, position]) => {
+                new google.maps.Marker({
+                    position,
+                    map,
+                    title: name,
+                    label: {
+                        text: name,
+                        color: "black",
+                        fontSize: "18px",
+                        fontWeight: "bold"
+                    },
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 12,
+                        fillColor: "red",
+                        fillOpacity: 1,
+                        strokeWeight: 2
+                    }
+                });
+            });
+        }
+
+        window.gm_authFailure = () => alert("Google Maps failed to load!");
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>

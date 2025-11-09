@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAVI-BOT SIST</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            min-width: 300px;
+            transition: transform 0.3s ease;
+        }
+
+        #controls:hover {
+            transform: translateY(-2px);
+        }
+
+        .control-title {
+            margin: 0 0 20px 0;
+            color: #1a73e8;
+            font-family: 'Google Sans', Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .select-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .select-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: white;
+            padding: 0 6px;
+            color: #5f6368;
+            font-size: 0.9rem;
+            font-family: 'Roboto', sans-serif;
+            pointer-events: none;
+            transition: 0.2s all ease;
+        }
+
+        .modern-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #dadce0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Roboto', sans-serif;
+            background: white;
+            appearance: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .modern-select:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .path-button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Google Sans', Arial, sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .find-button {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .clear-button {
+            background: #f1f3f4;
+            color: #5f6368;
+        }
+
+        .path-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .path-button:active {
+            transform: translateY(1px);
+        }
+
+        .path-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255,255,255,0.3),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .path-button:hover::after {
+            left: 100%;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .highlighted-path {
+            animation: pulse 1.5s infinite;
+        }
+
+        #location-status {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #5f6368;
+            text-align: center;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSg_Xu0Lt24Y7WyK30OTXtTmb67gbDN-k&libraries=geometry&callback=initMap" async defer></script>
+    <script>
+        let map;
+        let polylines = [];
+        const graph = {};
+        let highlightedPath = null;
+        let userLocationMarker = null;
+
+        function initMap() {
+            const locations = {
+                "A": { lat: 12.871594404312932, lng: 80.21989142182689},
+                "ST": { lat: 12.871357673608909, lng: 80.22108199297492 },
+                "SP": { lat: 12.871190138568993, lng: 80.22188184840775 },
+                "D": { lat: 12.871053316032322, lng: 80.2228225660964 },
+                "H1": { lat: 12.870838837309105, lng: 80.22400984281501 },
+                "F": { lat: 12.871973773596293, lng: 80.21875837045675 },
+                "LIB": { lat: 12.873586050132726, lng: 80.21927424789436 },
+                "H": { lat: 12.873157096839943, lng: 80.21989254218167 },
+                "B4": { lat: 12.87302027537999, lng: 80.22056014825934 },
+                "B2": { lat: 12.87291673476354, lng: 80.22088636487716 },
+                "ECE": { lat: 12.873563862925572, lng: 80.22069291081634 },
+                "ME": { lat: 12.87372656916937, lng: 80.2200025454158 },
+                "AER": { lat: 12.873867088114379, lng: 80.21929321394971 },
+                "B18": { lat: 12.87500233038697, lng: 80.22168673352012 },
+                "B14": { lat: 12.87435150809023, lng: 80.22153121164418 },
+                "H3": { lat: 12.870531105251846, lng: 80.21964413165101 },
+                "Q": { lat: 12.872282886931236, lng: 80.22142185660726 },
+                "R": { lat: 12.872428006244888, lng: 80.22075875136221 },
+                "CAN": { lat: 12.872568727923362, lng: 80.2201046679572 },
+                "T": { lat: 12.872763221579026, lng: 80.21909212353748 },
+                "U": { lat: 12.872167511430147, lng: 80.22201116424104 },
+                "FG": { lat: 12.873358463671309, lng: 80.22224082279553 },
+                "MEM": { lat: 12.873346800244912, lng: 80.22167366284735 },
+                "B1": { lat: 12.873977259087972, lng: 80.22153908833536 },
+                "RC": { lat: 12.872798747928382, lng: 80.22158055446326 },
+                "B9": {lat:12.873266059089861, lng: 80.21921053958437},
+                "B5": {lat: 12.873063923119268, lng: 80.22032593968933},
+                "4": {lat: 12.872533119287255, lng: 80.22023474458247},
+                "H2": {lat: 12.87171207072451, lng: 80.219902150663},
+                "AR": {lat: 12.87049618180052, lng: 80.2208141017325},
+                "7": {lat: 12.87342262918647, lng: 80.22137593764548},
+                "BM": {lat: 12.874841999321662, lng: 80.2203170353051},
+                "9": {lat: 12.87460536198682, lng: 80.22025534449733},
+                "ATM": {lat: 12.872741018063705, lng: 80.21895179091722},
+                "CE": {lat: 12.87444847523238, lng: 80.21938630877837},
+                "CH": {lat: 12.873956896111736, lng: 80.21894106208009},
+                "NCS": {lat: 12.8723293811128, lng: 80.2170925325027},
+                "AUT": {lat: 12.874910713178258, lng: 80.21999964249136},
+                "REM": {lat: 12.874487699397049, lng: 80.2190756490057},
+                "MBA": {lat: 12.872045390457574, lng: 80.21822281734998}
+            };
+            
+            const connections = [
+                ["B18", "B14"], ["B14", "B1"], ["B1", "7"], ["MEM", "FG"], ["FG", "U"], ["U", "SP"],["ME","BM"],["F","MBA"],
+                ["SP", "D"], ["D", "H1"], ["SP", "ST"], ["ST", "A"], ["A", "H3"], ["H2", "F"],["9","B14"],["B4","ECE"],
+                ["A", "H2"], ["CAN","T"], ["CAN", "R"], ["R", "B2"], ["R", "Q"], ["H2","CAN"],["ATM","T"],["BM","AUT"],
+                ["T", "LIB"], ["LIB", "AER"], ["AER", "ME"], ["ME", "ECE"], ["7", "MEM"], ["Q", "RC"],["AER","CE"],["CH","REM"],
+                ["RC", "MEM"], ["B4", "B2"], ["H", "I"], ["H", "ME"], ["F", "ATM"], ["ST", "Q"],["AER","CH"], ["MBA","NCS"],
+                ["Q", "U"],["B2","RC"],["B9","H"],["T",""],["K","B4"],["H","B5"],["B5","B4"],["B5","4"],["ST","AR"],["7","ECE"]
+            ];
+
+            initializeGraph(connections, locations);
+            createBaseMap(locations, connections);
+            addControls(Object.keys(locations));
+            setupBanners();
+
+            // Add slight delay for controls initialization
+            setTimeout(() => {
+                getUserLocation(locations);
+            }, 500);
+        }
+
+        function getUserLocation(locations) {
+            const statusElement = document.getElementById('location-status');
+            statusElement.textContent = "Detecting your location...";
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const userLatLng = new google.maps.LatLng(
+                            position.coords.latitude,
+                            position.coords.longitude
+                        );
+                        
+                        // Clear existing marker
+                        if (userLocationMarker) {
+                            userLocationMarker.setMap(null);
+                        }
+
+                        // Add new marker
+                        userLocationMarker = new google.maps.Marker({
+                            position: userLatLng,
+                            map: map,
+                            title: "Your Location",
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 8,
+                                fillColor: "#EA4335",
+                                fillOpacity: 1,
+                                strokeWeight: 2,
+                                strokeColor: "#FFFFFF"
+                            },
+                            zIndex: 9999
+                        });
+
+                        // Find nearest node
+                        let nearestNode = findNearestNode(userLatLng, locations);
+                        
+                        // Update UI
+                        const fromSelect = document.getElementById('fromPoint');
+                        if (fromSelect) {
+                            fromSelect.value = nearestNode;
+                            map.panTo(userLatLng);
+                            map.setZoom(18);
+                            statusElement.textContent = `Location found! Starting point set to ${nearestNode}`;
+                        }
+                    },
+                    error => {
+                        console.error('Geolocation error:', error);
+                        statusElement.textContent = "Could not detect your location. Please select starting point manually.";
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                statusElement.textContent = "Geolocation is not supported by your browser. Please select starting point manually.";
+            }
+        }
+
+        function findNearestNode(userLatLng, locations) {
+            let minDistance = Infinity;
+            let nearestNode = Object.keys(locations)[0];
+            
+            Object.entries(locations).forEach(([nodeName, nodeLatLng]) => {
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    userLatLng,
+                    new google.maps.LatLng(nodeLatLng)
+                );
+                
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestNode = nodeName;
+                }
+            });
+            return nearestNode;
+        }
+
+        function initializeGraph(connections, locations) {
+            connections.forEach(([start, end]) => {
+                if (!start || !end) return;
+                
+                if (!graph[start]) graph[start] = {};
+                if (!graph[end]) graph[end] = {};
+                
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(locations[start]),
+                    new google.maps.LatLng(locations[end])
+                );
+                
+                graph[start][end] = distance;
+                graph[end][start] = distance;
+            });
+        }
+
+        function createBaseMap(locations, connections) {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 16,
+                center: { lat: 12.872, lng: 80.220 },
+                disableDefaultUI: true
+            });
+
+            Object.entries(locations).forEach(([name, position]) => {
+                new google.maps.Marker({
+                    position,
+                    map,
+                    title: name,
+                    label: {
+                        text: name,
+                        color: '#ffffff',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    },
+                    icon: {
+                        url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" viewBox="0 0 36 48">
+                            <path fill="${'#4285F4'}" d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 30 18 30s18-16.5 18-30C36 8.06 27.94 0 18 0z"/>
+                            <path fill="${'#3367D6'}" d="M18 2C9.16 2 2 9.16 2 18c0 12.4 16 27.7 16 27.7s16-15.3 16-27.7C34 9.16 26.84 2 18 2z"/>
+                            <circle cx="18" cy="18" r="10" fill="white"/>
+                            <circle cx="18" cy="18" r="8" fill="${'#34A853'}"/>
+                        </svg>
+                        `)}`,
+                        scaledSize: new google.maps.Size(36, 48),
+                        anchor: new google.maps.Point(18, 48),
+                        labelOrigin: new google.maps.Point(18, 14)
+                    },
+                    zIndex: 1000
+                });
+            });
+
+            connections.forEach(([start, end]) => {
+                if (!start || !end) return;
+                
+                const polyline = new google.maps.Polyline({
+                    path: [locations[start], locations[end]],
+                    geodesic: true,
+                    strokeColor: "#0000FF",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3,
+                    map: map
+                });
+                polylines.push({start, end, polyline});
+            });
+        }
+
+        function setupBanners() {
+            const colors = ["#FF0000", "#FF9900", "#FFFF00", "#33CC33", "#3399FF", "#9900CC"];
+            let colorIndex = 0;
+
+            const banners = [
+                { marker: createBanner(map, "St Paul's Block", 12.870825117973537, 80.22220445274708) },
+                { marker: createBanner(map, "Admin Block", 12.873109037152089, 80.22185688706048) },
+                { marker: createBanner(map, "Block 1", 12.87384127360079, 80.22126902336264) },
+                { marker: createBanner(map, "Ground", 12.871929301164975, 80.22049699549801) },
+                { marker: createBanner(map, "Block 18", 12.874724706378235, 80.22170858465938) },
+                { marker: createBanner(map, "Block 7", 12.872923046222537, 80.21952559115593) },
+                { marker: createBanner(map, "Block 5", 12.872806562980852, 80.22006612450527) },
+                { marker: createBanner(map, "Veg Mess", 12.871899626685225, 80.21801863627906) },
+                { marker: createBanner(map, "Non Veg Mess", 12.872593054616612, 80.21876183686014) },
+                { marker: createBanner(map, "Canteen", 12.872540350831828, 80.21952891655631) },
+                { marker: createBanner(map, "Basketball Stadium", 12.871355613793064, 80.22012539085628) },
+                { marker: createBanner(map, "Indoor Stadium", 12.87125610806669, 80.22054324183738) },
+                { marker: createBanner(map, "Gopalakrishnan Hostel", 12.872133000929106, 80.21939494907703) },
+                { marker: createBanner(map, "Library", 12.873616248906009, 80.21909511705476) }
+            ];
+
+            function updateBannerColors() {
+                colorIndex = (colorIndex + 1) % colors.length;
+                banners.forEach(banner => {
+                    banner.marker.setLabel({
+                        text: banner.marker.getTitle(),
+                        color: colors[colorIndex],
+                        fontSize: "18px",
+                        fontWeight: "bold"
+                    });
+                });
+                setTimeout(updateBannerColors, 1000);
+            }
+
+            updateBannerColors();
+        }
+
+        function createBanner(map, title, lat, lng) {
+            return new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+                title: title,
+                icon: { path: google.maps.SymbolPath.CIRCLE, scale: 0 }
+            });
+        }
+
+        function addControls(points) {
+            const controls = document.createElement('div');
+            controls.id = 'controls';
+            controls.innerHTML = `
+                <h3 class="control-title">NAVI-BOT</h3>
+                <div class="select-container">
+                    <select id="fromPoint" class="modern-select">
+                        ${points.map(p => `<option>${p}</option>`).join('')}
+                    </select>
+                    <span class="select-label">From Location</span>
+                </div>
+                <div class="select-container">
+                    <select id="toPoint" class="modern-select">
+                        ${points.map(p => `<option>${p}</option>`).join('')}
+                    </select>
+                    <span class="select-label">To Location</span>
+                </div>
+                <div class="button-group">
+                    <button class="path-button find-button" onclick="findShortestPath()">Find Path</button>
+                    <button class="path-button clear-button" onclick="clearPath()">Clear</button>
+                </div>
+                <div id="location-status"></div>
+            `;
+            document.body.appendChild(controls);
+        }
+
+        function findShortestPath() {
+            clearPath();
+            const from = document.getElementById('fromPoint').value;
+            const to = document.getElementById('toPoint').value;
+
+            // Dijkstra's algorithm
+            const distances = {};
+            const prev = {};
+            const queue = new Set(Object.keys(graph));
+            
+            for (const vertex in graph) {
+                distances[vertex] = Infinity;
+                prev[vertex] = null;
+            }
+            distances[from] = 0;
+
+            while (queue.size) {
+                let u = null;
+                let minDist = Infinity;
+                for (const v of queue) {
+                    if (distances[v] < minDist) {
+                        minDist = distances[v];
+                        u = v;
+                    }
+                }
+                
+                if (u === to || u === null) break;
+                queue.delete(u);
+
+                for (const v in graph[u]) {
+                    const alt = distances[u] + graph[u][v];
+                    if (alt < distances[v]) {
+                        distances[v] = alt;
+                        prev[v] = u;
+                    }
+                }
+            }
+
+            // Reconstruct path
+            const path = [];
+            let current = to;
+            while (current !== null) {
+                path.unshift(current);
+                current = prev[current];
+            }
+
+            if (path.length < 2) {
+                alert("No path found!");
+                return;
+            }
+
+            highlightPath(path);
+        }
+
+        function highlightPath(path) {
+            for (let i = 0; i < path.length - 1; i++) {
+                const start = path[i];
+                const end = path[i+1];
+                
+                const connection = polylines.find(p => 
+                    (p.start === start && p.end === end) || 
+                    (p.start === end && p.end === start)
+                );
+                
+                if (connection) {
+                    connection.polyline.setOptions({
+                        strokeColor: "#FF0000",
+                        strokeWeight: 6,
+                        strokeOpacity: 0.8
+                    });
+                }
+            }
+            highlightedPath = path;
+        }
+
+        function clearPath() {
+            if (highlightedPath) {
+                polylines.forEach(p => p.polyline.setOptions({
+                    strokeColor: "#0000FF",
+                    strokeWeight: 3,
+                    strokeOpacity: 1.0
+                }));
+                highlightedPath = null;
+            }
+        }
+
+        window.gm_authFailure = () => alert("Google Maps failed to load!");
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>

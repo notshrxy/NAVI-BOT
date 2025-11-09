@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Nodes on Image</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            overflow: hidden;
+        }
+        .graph-container {
+            position: relative;
+            width: 90vw; /* Responsive width */
+            max-width: 981px; /* Keep original image width */
+            aspect-ratio: 981 / 511; /* Maintain image aspect ratio */
+            background: url('simplified_map sist.jpg') no-repeat center center;
+            background-size: contain;
+            border: 2px solid black;
+        }
+        .node {
+    width: 20px;  /* Fixed size */
+    height: 20px; /* Equal width & height for perfect circle */
+    background-color: black;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%; /* Ensures round shape */
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+        /* Nodes positioned with percentage (relative to the container) */
+        .node:nth-child(1) { top: 42%; left: 58%; }
+        .node:nth-child(2) { top: 48%; left: 55%; }
+        .node:nth-child(3) { top: 55%; left: 37%; }
+        .node:nth-child(4) { top: 54%; left: 30%; }
+        .node:nth-child(5) { top: 75%; left: 47%; }
+        .node:nth-child(6) { top: 33%; left: 51%; }
+        .node:nth-child(7) { top: 22%; left: 52%; }
+        .node:nth-child(8) { top: 62%; left: 46%; }
+        .node:nth-child(9) { top: 53%; left: 19%; }
+        .node:nth-child(10) { top: 40%; left: 34%; }
+        .node:nth-child(11) { top: 90%; left: 50%; }
+        .node:nth-child(12) { top: 20%; left: 85%; }
+        .node:nth-child(13) { top: 25%; left: 65%; }
+        .node:nth-child(14) { top: 65%; left: 10%; }
+        .node:nth-child(15) { top: 10%; left: 90%; }
+        .node:nth-child(16) { top: 92%; left: 40%; }
+        .node:nth-child(17) { top: 45%; left: 55%; }
+        .node:nth-child(18) { top: 85%; left: 70%; }
+        .node:nth-child(19) { top: 40%; left: 25%; }
+    </style>
+</head>
+<body>
+
+    <div class="graph-container">
+        <!-- 19 Nodes -->
+        <div class="node">A</div>
+        <div class="node">B</div>
+        <div class="node">C</div>
+        <div class="node">D</div>
+        <div class="node">E</div>
+        <div class="node">F</div>
+        <div class="node">G</div>
+        <div class="node">H</div>
+        <div class="node">I</div>
+        <div class="node">J</div>
+        <div class="node">K</div>
+        <div class="node">L</div>
+        <div class="node">M</div>
+        <div class="node">N</div>
+        <div class="node">O</div>
+        <div class="node">P</div>
+        <div class="node">Q</div>
+        <div class="node">R</div>
+        <div class="node">S</div>
+    </div>
+
+</body>
+</html>

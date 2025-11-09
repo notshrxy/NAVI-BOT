@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Map - Anchor Points</title>
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSg_Xu0Lt24Y7WyK30OTXtTmb67gbDN-k&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            const locations = [
+                { name: "A", lat: 12.871627620376513, lng: 80.21990230264763 },
+                { name: "B", lat: 12.871357673608909, lng: 80.22108199297492 },
+                { name: "C", lat: 12.871190138568993, lng: 80.22188184840775 },
+                { name: "D", lat: 12.871053316032322, lng: 80.2228225660964 },
+                { name: "E", lat: 12.870838837309105, lng: 80.22400984281501 },
+                { name: "F", lat: 12.871973773596293, lng: 80.21875837045675 },
+                { name: "G", lat: 12.873586050132726, lng: 80.21927424789436 },
+                { name: "H", lat: 12.873157096839943, lng: 80.21989254218167 },
+                { name: "I", lat: 12.87302027537999, lng: 80.22056014825934 },
+                { name: "J", lat: 12.87291673476354, lng: 80.22088636487716 },
+                { name: "K", lat: 12.873563862925572, lng: 80.22069291081634 },
+                { name: "L", lat: 12.87372656916937, lng: 80.2200025454158 },
+                { name: "M", lat: 12.873867088114379, lng: 80.21929321394971 },
+                { name: "N", lat: 12.87500233038697, lng: 80.22168673352012 },
+                { name: "O", lat: 12.87435150809023, lng: 80.22153121164418 },
+                { name: "P", lat: 12.870531105251846, lng: 80.21964413165101 }
+            ];
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 16,
+                center: { lat: 12.872, lng: 80.220 },
+                disableDefaultUI: true
+            });
+
+            locations.forEach((location) => {
+                const marker = new google.maps.Marker({
+                    position: { lat: location.lat, lng: location.lng },
+                    map: map,
+                    title: location.name,
+                    label: location.name,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: "red",
+                        fillOpacity: 1,
+                        strokeWeight: 1
+                    }
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
