@@ -1,0 +1,117 @@
+# =========================================
+# 🌐 NAVIBOT PROJECT .gitignore
+# Covers Python backend, Flask web app,
+# frontend assets, and ESP32-related files
+# =========================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+ENV/
+.venv/
+.Python
+*.log
+instance/
+db.sqlite3
+*.db
+*.sqlite
+
+# --- Dependencies ---
+Lib/
+Scripts/
+site-packages/
+*.egg-info/
+pip-wheel-metadata/
+
+# --- Flask / Web ---
+*.env
+.env.*
+flask_session/
+__pycache__/
+*.pyc
+
+# --- Node / React (if using frontend) ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+/dist
+/build
+/.next
+/out
+*.tsbuildinfo
+
+# --- ESP32 / Arduino ---
+*.bin
+*.elf
+*.hex
+*.ino.*
+*.map
+*.eep
+
+# --- System / IDE ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Media & Large Files ---
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.flac
+*.zip
+*.tar
+*.rar
+*.7z
+*.blend
+*.obj
+*.glb
+*.fbx
+Demo Img/
+Demo Img, Videos/
+uploads/
+assets/videos/
+assets/raw/
+
+# --- Logs & Caches ---
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.cache/
+__MACOSX/
+
+# --- Firebase / Cloud ---
+.firebase/
+.firebaserc
+.cache/
+serviceAccountKey.json
+
+# --- OS & Misc ---
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# --- Testing / Coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+
+# --- Optional Tools ---
+*.ipynb_checkpoints/
+*.idea/
+*.iml
+*.code-workspace
