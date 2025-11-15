@@ -5,9 +5,11 @@
 char wifi_ssid[] = "teacher";
 char wifi_pass[] = "87654321";
 
-String telegrambotToken = "7685356100:AAHhc3u10xHqoNsfcE6jmaVAlmbLgNMAyJU";
+//Replace with any Telegram Bot APIs of your choice for Customization
+String telegrambotToken = "PLACE_A_CUSTOM_TELEGRAM_BOT_API_KEY_HERE";
 String telegrambotChatID = "6441251341";
 
+//Forefront API Key - Free and Open Sourced ChatBot Model
 String forefrontKey = "sk-o5R5GbIrBtgmnwHVWXnngqxMcbavjSF9";  // ForeFront API Key
 
 // ForeFront Chat
