@@ -4,12 +4,12 @@
 #include <ArduinoJson.h>
 
 // Wifi Credentials
-const char* ssid = "alex";
-const char* password = "alex9444075741";
+const char* ssid = "YOUR_ARDUINO_WIFI_SSID";
+const char* password = "WIFI_PASSWORD";
 
 // Forefront API Key and endpoint
-const char* apiKey = "sk-o5R5GbIrBtgmnwHVWXnngqxMcbavjSF9";  
-const char* endpoint = "https://api.forefront.ai/v1/chat/completions"; 
+const char* apiKey = "MODEL_API_KEY_HERE";  
+const char* endpoint = "USE_A_FOREFRONT_OR_ANY_OPEN_SOURCED_CHATBOT_ENDPOINT_HERE"; 
 
 WiFiClientSecure client;  
 
