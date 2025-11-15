@@ -2,15 +2,15 @@
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 
-char wifi_ssid[] = "teacher";
-char wifi_pass[] = "87654321";
+char wifi_ssid[] = "YOUR_ARDUINO_WIFI_SSID";
+char wifi_pass[] = "WIFI_PASSWORD";
 
 //Replace with any Telegram Bot APIs of your choice for Customization
 String telegrambotToken = "PLACE_A_CUSTOM_TELEGRAM_BOT_API_KEY_HERE";
-String telegrambotChatID = "6441251341";
+String telegrambotChatID = "PLACE_THE_CHAT_ID_THAT_TELEGRAM_PROVIDES_FOR_EACH_BOT_HERE";
 
 //Forefront API Key - Free and Open Sourced ChatBot Model
-String forefrontKey = "sk-o5R5GbIrBtgmnwHVWXnngqxMcbavjSF9";  // ForeFront API Key
+String forefrontKey = "MODEL_API_KEY_HERE";  // ForeFront API Key
 
 // ForeFront Chat
 String role = "You are a helpful assistant.";
