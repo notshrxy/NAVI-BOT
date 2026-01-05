@@ -34,6 +34,8 @@ Built as a practical prototype, NaviBot demonstrates how embedded systems and we
 
 ## 🛠️ Flow Diagram
 
+<img width="400" height="523" alt="Image" src="https://github.com/user-attachments/assets/2565360f-0ee0-478e-973f-56583f748cad" />
+
 ---
 
 ## ✨ Features
