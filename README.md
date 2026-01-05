@@ -10,7 +10,7 @@ Built as a practical prototype, NaviBot demonstrates how embedded systems and we
 
 ![Image](https://github.com/user-attachments/assets/9a8a016f-2f50-4bbb-be5d-dd4c8a5977d7)
 
-
+https://github.com/user-attachments/assets/efae4f60-0ab6-48e7-a6cc-17a222e315b1
 
 ---
 
@@ -28,12 +28,6 @@ Built as a practical prototype, NaviBot demonstrates how embedded systems and we
 <img src="https://github.com/user-attachments/assets/72c29441-1b95-4712-8790-e7656232ed05" width="400" height='523'/>
 ![Image](https://github.com/user-attachments/assets/df9d0c90-c895-4490-ac4a-a072fe1da228)
 <img src="https://github.com/user-attachments/assets/b974ee6f-b667-4d13-b06c-ad34af7f26ee" width="400" height='600'/>
-
-
----
-
-## 🛠️ Flow Diagram
-
 <img width="400" height="523" alt="Image" src="https://github.com/user-attachments/assets/2565360f-0ee0-478e-973f-56583f748cad" />
 
 ---
